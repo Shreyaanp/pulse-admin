@@ -49,18 +49,83 @@ export default function Products() {
       </Link>
 
       {loading ? ( // Show loading state while data is being fetched
-        <p
-        className="
-        bg-gray-200
-        rounded-lg
-        text-white
-        p-4
-        mr-4
-        w-full
-        text-center
 
-        "
-        >Loading...</p>
+                  <table className="
+        w-4/5
+        animate-pulse
+
+
+        ">
+          <thead
+          className="
+          bg-gray-200
+          "
+          >
+            <tr>
+              <th className="border px-4 py-2">Product</th>
+              <th className="border px-4 py-2">Price</th>
+              <th className="border px-4 py-2">Category</th>
+              <th className="border px-4 py-2">Quantity</th>
+              <th className="border px-4 py-2">Discount</th>
+              <th className="border px-4 py-2">Function</th>
+            </tr>
+          </thead>
+          <tbody>
+
+              <tr>
+                <td className="border px-4 py-2">
+                  .........
+                </td>
+
+                <td className="border px-4 py-2">
+.........
+                </td>
+                <td className="border px-4 py-2">
+.........
+                </td>
+                <td className="border px-4 py-2">
+.........
+                </td>
+                <td className="border px-4 py-2">
+                  discount rate =  <br />
+                  dprice =
+                </td>
+                <td className="border px-4 py-2
+                flex
+                flex-row
+                gap-4
+                justify-center
+                items-center
+
+                ">
+                  <button
+                    className="bg-blue-500 rounded-lg text-white p-2"
+
+                  >
+                    view
+                  </button>
+
+                  <button
+                    className="bg-green-500 rounded-lg text-white p-2"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+    className="bg-red-500 rounded-lg text-white p-2"
+
+  >
+    Delete
+  </button>
+
+                </td>
+
+
+              </tr>
+
+          </tbody>
+        </table>
+
       ) : (
         <table className="
         w-4/5
