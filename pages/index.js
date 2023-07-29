@@ -17,7 +17,7 @@ const LoginPage = () => {
   // Function to handle sign-in
   const handleSignIn = async () => {
     // You can use the signIn method from NextAuth.js to initiate the sign-in process
-    await signIn('google');
+    await signIn('google', { callbackUrl: '/home'});
     // Replace 'your_authentication_provider' with the name of your authentication provider configured in NextAuth.js
   };
 
