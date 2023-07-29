@@ -1,40 +1,34 @@
-import Layout from "@/component/Layout";
-import axios from "axios";
-import { useState } from "react";
-import Success from "@/component/Success";
+import axios from "axios"
+import { useEffect, useState } from "react"
+import Success from "@/component/Success"
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { set } from "mongoose";
 
-export default function NewProduct() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState(0);
-  const [image, setImage] = useState("");
-  const [gender, setGender] = useState("");
-  const [kid, setKid] = useState(false);
-  const [category, setCategory] = useState("");
-  const [subcategory, setSubcategory] = useState("");
-  const [brand, setBrand] = useState("");
-  const [color, setColor] = useState("");
-  const [size, setSize] = useState("");
-  const [quantity, setQuantity] = useState(0);
-  const [rating, setRating] = useState("");
-  const [reviews, setReviews] = useState("");
-  const [discount, setDiscount] = useState(0);
-  const [discountprice, setDiscountPrice] = useState(0);
+
+export default function ProductForm(productdata) {
+  const[title, setTitle] = useState(productdata.title);
+  const[description, setDescription] = useState(productdata.description);
+  const[price, setPrice] = useState(productdata.price);
+  const[image, setImage] = useState(productdata.image);
+  const [gender, setGender] = useState(productdata.gender);
+  const [kid, setKid] = useState(productdata.kid);
+  const [category, setCategory] = useState(productdata.category);
+  const [subcategory, setSubcategory] = useState(productdata.subcategory);
+  const [brand, setBrand] = useState(productdata.brand);
+  const [color, setColor] = useState(productdata.color);
+  const [size, setSize] = useState(productdata.size);
+  const [quantity, setQuantity] = useState(productdata.quantity);
+  const [rating, setRating] = useState('');
+  const [reviews, setReviews] = useState('');
+  const [discount, setDiscount] = useState(productdata.discount );
+  const [discountprice, setDiscountPrice] = useState(price - price * (discount / 100));
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date().toISOString());
-  const [statustate, setStatusstate] = useState("");
   const [featured, setFeatured] = useState(false);
   const [newarrival, setNewArrival] = useState(false);
   const [bestseller, setBestSeller] = useState(false);
   const [trending, setTrending] = useState(false);
   const [dealoftheday, setDealOfTheDay] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
-  const [selectgender, setSelectGender] = useState(0);
-  const router = useRouter();
+  const [statustate, setStatusstate] = useState(productdata.statustate);
   const functionDateTime = () => {
     const date = new Date();
     const year = date.getFullYear();
@@ -49,7 +43,10 @@ export default function NewProduct() {
     setDate(date);
   };
 
-  async function createProduct(e) {
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
+  console.log(productdata);
+ async function createProduct(e) {
     e.preventDefault();
     if (!gender) {
       alert("Please select a gender before adding the product.");
@@ -91,11 +88,6 @@ export default function NewProduct() {
       alert("Please enter Gender before adding the product.");
       return;
     }
-    if(discount>100){
-      alert("Discount cannot be greater than 100");
-      return;
-    }
-
     const data = {
       title,
       description,
@@ -121,9 +113,10 @@ export default function NewProduct() {
       bestseller,
       trending,
       dealoftheday,
-    };
+    }
     try {
-      await axios.post("/api/products", data);
+      // this is for editing the product
+      await axios.post("/api/products?id="+productdata._id, data);
       setSuccess(true);
       setError(false);
     } catch (error) {
@@ -141,72 +134,52 @@ export default function NewProduct() {
       }
     }
   }
+
   return (
-    <Layout>
-      <div
+    <>
+     <div
         className="
                 flex
                 flex-col
                 gap-4
-                w-3/4
+                w-1/2
                 mx-auto
-                bg-gray-300
-                p-2
-                rounded-lg
             "
       >
-        <div
-        className="
-        flex
-        flex-row
-
-        justify-between
-        "
-        >
-        <div className="text-2xl font-bold">
-
-Add new product</div>
-<div
-onClick={
-  () => {
-    router.push("/products");
-}
-}
->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-<path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
-</svg>
-
-</div>
-        </div>
+        <div className="text-2xl font-bold">Add new product</div>
         <form className="flex flex-col gap-4" onSubmit={createProduct}>
+
           <input
             type="text"
             onChange={(e) => {
-              setTitle(e.target.value);
+              setTitle(
+                e.target.value
+              );
               functionDateTime();
             }}
-            placeholder="Product name"
+            defaultValue={productdata.title}
+
             className="border-2 border-gray-400 p-2 rounded-lg"
 
           />
           <input
             type="text"
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Product description"
+            defaultValue={productdata.description}
+
             className="border-2 border-gray-400 p-2 rounded-lg"
           />
           <input
             type="text"
             onChange={(e) => setPrice(e.target.value)}
-            placeholder="Product price"
+           defaultValue = {productdata.price}
             className="border-2 border-gray-400 p-2 rounded-lg"
 
           />
           <input
             type="text"
             onChange={(e) => setImage(e.target.value)}
-            placeholder="Product image"
+            defaultValue={productdata.image}
             className="border-2 border-gray-400 p-2 rounded-lg"
           />
           <div className="grid grid-cols-4 gap-3 bg-gray-100 p-2 rounded-lg">
@@ -215,10 +188,10 @@ onClick={
               type="button"
               onClick={() => {
                 setGender("Male");
-                setSelectGender(1);
+
               }}
               className={
-                selectgender === 1
+                gender === 'Male'
                   ? "bg-blue-500 rounded-lg text-white p-2"
                   : "bg-gray-300 rounded-lg text-black p-2"
               }
@@ -229,10 +202,10 @@ onClick={
               type="button"
               onClick={() => {
                 setGender("Female");
-                setSelectGender(2);
+
               }}
               className={
-                selectgender === 2
+                gender === "Female"
                   ? "bg-blue-500 rounded-lg text-white p-2"
                   : "bg-gray-300 rounded-lg text-black p-2"
               }
@@ -243,10 +216,10 @@ onClick={
               type="button"
               onClick={() => {
                 setGender("Unisex");
-                setSelectGender(3);
+
               }}
               className={
-                selectgender === 3
+                gender === "Unisex"
                   ? "bg-blue-500 rounded-lg text-white p-2"
                   : "bg-gray-300 rounded-lg text-black p-2"
               }
@@ -266,7 +239,9 @@ onClick={
           "
           >
             kid :
-            <input type="checkbox" onChange={(e) => setKid(e.target.checked)} />
+            <input type="checkbox" onChange={(e) => setKid(e.target.checked)}
+            defaultChecked={productdata.kid}
+            />
           </div>
           <div
             className="
@@ -625,7 +600,7 @@ onClick={
           <input
             type="text"
             onChange={(e) => setBrand(e.target.value)}
-            placeholder="Product brand"
+            defaultValue={productdata.brand}
             className="border-2 border-gray-400 p-2 rounded-lg"
 
           />
@@ -633,13 +608,15 @@ onClick={
             type="text"
             onChange={(e) => setColor(e.target.value)}
             placeholder="Product color choices, ex: white, yellow, black"
+            defaultValue={productdata.color}
             className="border-2 border-gray-400 p-2 rounded-lg"
 
           />
           <input
             type="text"
             onChange={(e) => setSize(e.target.value)}
-            placeholder="Product size choices, ex: S, M, L or 42, 43, 44"
+            placeholder="Product size choices, ex: S, M, L or 42, 43, 44 only single entry"
+            defaultValue={productdata.size}
             className="border-2 border-gray-400 p-2 rounded-lg"
 
           />
@@ -647,6 +624,7 @@ onClick={
             type="Number"
             onChange={(e) => setQuantity(e.target.value)}
             placeholder="Product quantity"
+            defaultValue={productdata.quantity}
             className="border-2 border-gray-400 p-2 rounded-lg"
 
           />
@@ -654,8 +632,9 @@ onClick={
             type="Number"
             onChange={(e) => {
               setDiscount(e.target.value);
-
+              setDiscountPrice(price - price * (e.target.value / 100));
             }}
+            defaultValue={productdata.discount}
             placeholder="Product discount"
             className="border-2 border-gray-400 p-2 rounded-lg"
 
@@ -664,6 +643,7 @@ onClick={
             Status :
             <textarea
               onChange={(e) => setStatusstate(e.target.value)}
+              defaultValue={productdata.statustate}
               placeholder="Product status"
               className="border-2 border-gray-400 p-2 rounded-lg col-span-4"
               rows={4}
@@ -675,33 +655,37 @@ onClick={
             <input
               type="checkbox"
               onChange={(e) => setFeatured(e.target.checked)}
+              defaultChecked={productdata.featured}
             />
             New Arrival :
             <input
               type="checkbox"
               onChange={(e) => setNewArrival(e.target.checked)}
+              defaultChecked={productdata.newarrival}
+
             />
             Best Seller :
             <input
               type="checkbox"
               onChange={(e) => setBestSeller(e.target.checked)}
+              defaultChecked={productdata.bestseller}
             />
             Trending :
             <input
               type="checkbox"
               onChange={(e) => setTrending(e.target.checked)}
+              defaultChecked={productdata.trending}
             />
             Deal of the Day :
             <input
               type="checkbox"
               onChange={(e) => setDealOfTheDay(e.target.checked)}
+              defaultChecked={productdata.dealoftheday}
             />
           </div>
           <button
             type="submit"
-            onClick={() => {setSuccess(false)
-              setDiscountPrice(price - price * (discount / 100));
-            }}
+            onClick={() => setSuccess(false)}
             className="bg-blue-500 rounded-lg text-white p-2"
           >
             Add product
@@ -723,22 +707,13 @@ onClick={
           >
             <div className="flex items-center justify-center">
               <img
-
                 src={image} // show image preview
-                // if image is not available then show default image
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png";
-                }}
                 alt="Image Preview"
-                className="
-            h-96
-            w-96
-                rounded-lg object-cover border-4 border-blue-500"
+                className="w-60 h-60 rounded-full object-cover border-4 border-blue-500"
               />
             </div>
             <div className="mt-4 text-center">
-              <h1 className="text-3xl font-bold">Image Preview</h1>
+              <h1 className="text-3xl font-bold">Image Section</h1>
             </div>
           </div>
         </div>
@@ -747,6 +722,6 @@ onClick={
         {/* if set error is true then show error component */}
         {error && <Error />}
       </div>
-    </Layout>
-  );
+    </>
+  )
 }
